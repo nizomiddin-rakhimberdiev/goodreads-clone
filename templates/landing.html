@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<title>{% block title %}Goodreads clone{% endblock %}</title>
+
+{% block content %}
+    <div class="row">
+    <div class="col-md-3">
+        <h6>CURRENTLY READING</h6>
+        <div class="row ">
+            <div class="col-3 mb-3">
+                <div class="d-flex flex-column align-items-center text-center">
+                    <img src="{{ book.cover_picture.url }}" alt="Admin"
+                         class="shadow small" width="100">
+                </div>
+            </div>
+            <div class="col-8 ms-3">
+                <div class=" mb-3">
+                    <div class="row">
+                        <div class=" text-dark">
+                            <h6 class="fw-bold p1">{{ book.title | truncatechars:40 }}</h6>
+                            <span class="text-secondary p1 ">by
+                                {% for book_author in book.bookauthor_set.all %}
+                                    {% if forloop.last %}
+                                        <a class="text-anchor text-decoration-none fst-italic text-dark limit-5"
+                                           href="{% url 'books:author' book.id book_author.id %}">{{ book_author.author.full_name }}</a>
+                                    {% else %}
+                                        <a class="text-anchor text-decoration-none fst-italic text-dark"
+                                           href="{% url 'books:author' book.id book_author.id %}">{{ book_author.author.full_name }}</a>
+                                        ,
+                                    {% endif %}
+                                {% endfor %}
+                                </span>
+                            <a class="btn btn-outline-secondary btn-sm p1" href="#">Update prostess</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        {% for review in reviews %}
+            {% if request.user == review.user %}
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="media mb-3">
+                            <div class="profile_picture" style="width: 50px; height:50px; overflow: clip; position: relative; border-radius: 50%">
+                                <img src="{{ review.user.profile_picture.url }}"
+                                 class="img-fluid" alt="" style="position: absolute; margin-bottom: 10px;">
+                            </div>
+
+
+                            <div class="media-body ml-3">
+                                <b>{{ review.user.username }}</b> rated this book {{ review.stars_given }} stars
+                                <div class="text-muted small">{{ review.created_at | date:"M d, Y" }}</div>
+                            </div>
+                        </div>
+
+                        <p>
+                            {{ review.comment | truncatechars:250 }}
+                        </p>
+                        <img class="cover-pic center" src="{{ review.book.cover_picture.url }}"
+                             alt="Book cover picture">
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div class="col-md-3">
+        <h6>GOODREADS CHOICE AWARDS</h6>
+        <div class="card bg-secondary text-white">
+            <card></card>
+            <img class="card-img-top" src="{% static 'image/choice-logo-home-module-medium.png' %}" alt="">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Announcing the Best
+                    Books of 2021</h5>
+                <a class="center btn btn-warning p-0 mb-3" href="#">See the winners</a>
+                <p>4,756,261 Votes Cast</p>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

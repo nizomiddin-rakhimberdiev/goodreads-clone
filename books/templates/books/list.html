@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}Book list{% endblock %}
+
+{% block content %}
+
+    <h3>Books</h3>
+    {% if page_obj %}
+        {% for book in page_obj %}
+            <div class="row gutters-sm">
+                <div class="col-md-2 mb-3">
+                    <div class="d-flex flex-column align-items-center text-center">
+                        <a href="{% url 'books:detail' book.id %}"><img src="{{ book.cover_picture.url }}" alt="Admin"
+                                                                        class="shadow" width="180"></a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class=" mb-3">
+                        <div class="">
+                            <div class="row">
+                                <div class="col-sm-9 text-dark">
+                                    <a class="text-decoration-none text-dark" href="{% url 'books:detail' book.id %}">
+                                        <h4>{{ book.title }}</h4></a>
+                                    <span class="text-secondary">
+                                    Authored by
+                                        {% for book_author in book.bookauthor_set.all %}
+                                            {% if forloop.last %}
+                                                <a class="text-anchor text-decoration-none fst-italic text-dark"
+                                                   href="{% url 'books:author' book.id book_author.id %}">{{ book_author.author.full_name }}</a>
+                                            {% else %}
+                                                <a class="text-anchor text-decoration-none fst-italic text-dark"
+                                                   href="{% url 'books:author' book.id book_author.id %}">{{ book_author.author.full_name }}</a>
+                                                ,
+                                            {% endif %}
+                                        {% endfor %}
+                                    </span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-9 ">
+                                    {{ book.description | truncatechars:250 }}
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row pt-1">
+                                <div class="col-sm-3">
+                                    <h6>Genre</h6>
+                                </div>
+                                <div class="col-sm-9 ">
+                                    {% for book_genre in book.genrebook_set.all %}
+                                        {% if forloop.last %}
+                                            <a class="text-anchor text-decoration-none fst-italic text-dark"
+                                               href="">{{ book_genre.genre.name }}</a>
+                                        {% else %}
+                                            <a class="text-anchor text-decoration-none fst-italic text-dark"
+                                               href="">{{ book_genre.genre.name }}</a>,
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <div class="row pt-1">
+                                <div class="col-sm-3">
+                                    <h6>ISBN</h6>
+                                </div>
+                                <div class="col-sm-9 ">
+                                    <h6>{{ book.isbn }}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <hr>
+                </div>
+
+            </div>
+        {% endfor %}
+
+
+
+        <nav>
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a href="?page=1" class="page-link">&laquo;first</a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ page_obj.previous_page_number }}" class="page-link">Privious</a>
+                    </li>
+                {% endif %}
+                <li class="page-item">
+                    <a href="#" class="page-link">{{ page_obj.number }}</a>
+                </li>
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a href="?page={{ page_obj.next_page_number }}" class="page-link">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a href="?page={{ page_obj.paginator.num_pages }}" class="page-link">last&raquo;</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% else %}
+        No books found.
+    {% endif %}
+
+
+
+
+
+
+{% endblock %}

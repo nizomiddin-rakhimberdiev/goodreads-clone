@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    rate now
+{% endblock title %}
+
+{% block content %}
+    <div class="row px-5">
+        <div class="col-md-12">
+            <h3><a class="text-decoration-none" href="{% url 'books:review' book.id %}">{{ book.title }} </a> > </h3>
+        </div>
+        <h3>Review</h3>
+    </div>
+    <div class="row px-5 pt-2">
+        <div class="col-md-1">
+            <a href="{% url 'books:review' book.id %}"><img class="img-fluid" src="{{ book.cover_picture.url }}" alt=""></a>
+        </div>
+        <div class="col-md-8">
+            <h5><a class="text-decoration-none text-dark fw-bold"
+                   href="{% url 'books:review' book.id %}">{{ book.title }} </a></h5>
+            <p>
+                by
+                {% for book_author in book.bookauthor_set.all %}
+                    {% if forloop.last %}
+                        <a class="text-anchor text-decoration-none fst-italic text-dark"
+                           href="{% url 'books:author' book.id book_author.id %}">{{ book_author.author.full_name }}</a>
+                    {% else %}
+                        <a class="text-anchor text-decoration-none fst-italic text-dark"
+                           href="{% url 'books:author' book.id book_author.id %}">{{ book_author.author.full_name }}</a>
+                        ,
+                    {% endif %}
+                {% endfor %}
+            </p>
+        </div>
+    </div>
+    <div class="row px-5 pt-3">
+        <div class="col-md-6 ">
+            <form class="rate-form" action="" method="POST">
+                {% csrf_token %}
+
+                {{ review_form | crispy }}
+
+                <button class="btn btn-secondary border">Post</button>
+            </form>
+
+        </div>
+    </div>
+
+{% endblock content %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{#{% extends 'base.html' %}#}
+{#{% load crispy_forms_tags %}#}
+{#{% load static %}#}
+{##}
+{#{% block title %}Add review{% endblock %}#}
+{#action="{% url 'books:review' book.id %}"#}
+{#{% block content %}#}
+{#    <h1>Add review page</h1>#}
+{#        <div class="row">#}
+{#            <div class="col-5">#}
+{#                <form class="rate-form" method="post" id="{{ object.id }}">#}
+{#                    {% csrf_token %}#}
+{#                    <button type="submit" class="bi bi-star-fill my-btn" id="first"></button>#}
+{#                    <button type="submit" class="bi bi-star-fill my-btn" id="second"></button>#}
+{#                    <button type="submit" class="bi bi-star-fill my-btn" id="third"></button>#}
+{#                    <button type="submit" class="bi bi-star-fill my-btn" id="fourth"></button>#}
+{#                    <button type="submit" class="bi bi-star-fill my-btn" id="fifth"></button>#}
+{#                    <div class="textarea">#}
+{#                        {{ object.comment }}#}
+{#                    </div>#}
+{#                    <br>#}
+{#                    <div id="confirm-box"></div>#}
+{#                </form>#}
+{#            </div>#}
+{#        </div>#}
+{##}
+{#{% endblock %}#}

@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}Author page{% endblock %}
+
+{% block content %}
+    <h1>Author page</h1>
+    <div class="row gutters-sm">
+        <div class="col-md-3 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex flex-column align-items-center text-center">
+                        <img src="{{ book_author.author.personal_photo.url }}" alt="Admin"
+                             class="rounded" width="150">
+                        <div class="mt-3">
+                            <button class="btn btn-dark btn-sm">Follow</button>
+                            <button class="btn btn-outline-dark btn-sm">Message</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h5 class="mb-0">Full Name</h5>
+                        </div>
+                        <div class="col-sm-9 text-dark">
+                            <h5>{{ book_author.author.full_name }}</h5>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h6 class="mb-0">Birth</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ book_author.author.info_birth }}
+                        </div>
+                    </div>
+                    <div class="row pt-2">
+                        <div class="col-sm-3">
+                            <h6 class="">Email</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            <p>{{ book_author.author.email }}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <h6>Genre</h6>
+                        </div>
+                        <div class="col-sm-9 ">
+                            {% for book_genre in book.genrebook_set.all %}
+                                {% if forloop.last %}
+                                    <a class="text-anchor text-decoration-none fst-italic text-dark"
+                                       href="">{{ book_genre.genre.name }}</a>
+                                {% else %}
+                                    <a class="text-anchor text-decoration-none fst-italic text-dark"
+                                       href="">{{ book_genre.genre.name }}</a>,
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card mt-3">
+                <div class="card-body">
+                    {% for book in books %}
+                        {% if book.id == book_author.book.id %}
+                            <a href="{% url 'books:detail' book.id %}">
+                                <img src="{{ book.cover_picture.url }}" alt="" width="100">
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

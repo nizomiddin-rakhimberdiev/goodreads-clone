@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% block title %}Book detail{% endblock %}
+
+{% block content %}
+
+    <div class="row ">
+        <div class="col-md-8">
+            <div class="row gutters-sm">
+                <div class="col-md-3 mb-3">
+                    <div class="d-flex flex-column align-items-center text-center">
+                        <img src="{{ book.cover_picture.url }}" alt="Admin"
+                             class="shadow" width="180">
+                        <div class="btn-group mt-4">
+                            <button class="btn btn-light btn-sm border dropdown-toggle" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                Currently reading
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-sm">
+                                <li><a class="dropdown-item " href="#">Read</a></li>
+                                <li><a class="dropdown-item" href="#">Want to Read</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href="#">Add shelf</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8 ms-2">
+                    <div class=" mb-3">
+                        <div class="row">
+                            <div class="col-sm-9 text-dark">
+                                <h4 class="fw-bold">{{ book.title }}</h4>
+                                <span class="text-secondary">
+                                    Authored by
+                                    {% for book_author in book.bookauthor_set.all %}
+                                        {% if forloop.last %}
+                                            <a class="text-anchor text-decoration-none fst-italic text-dark"
+                                               href="{% url 'books:author' book.id book_author.id %}">{{ book_author.author.full_name }}</a>
+                                        {% else %}
+                                            <a class="text-anchor text-decoration-none fst-italic text-dark"
+                                               href="{% url 'books:author' book.id book_author.id %}">{{ book_author.author.full_name }}</a>
+                                            ,
+                                        {% endif %}
+                                    {% endfor %}
+                                </span>
+                                <p>stars_given</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-9 ">
+                                {{ book.description | truncatechars:250 }}
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <h6>GET A COPY</h6>
+                            <div class="d-flex flex-column align-items-center">
+                                <div>
+                                    <button class="btn btn-outline-secondary border">Amazon</button>
+                                    <button class="btn btn-outline-secondary border">Online Stories</button>
+                                    <button class="btn btn-outline-secondary border">Book Links</button>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row pt-1">
+                            <div class="col-sm-3">
+                                <h6>Genre</h6>
+                            </div>
+                            <div class="col-sm-9 ">
+                                {% for book_genre in book.genrebook_set.all %}
+                                    {% if forloop.last %}
+                                        <a class="text-anchor text-decoration-none fst-italic text-dark"
+                                           href="">{{ book_genre.genre.name }}</a>
+                                    {% else %}
+                                        <a class="text-anchor text-decoration-none fst-italic text-dark"
+                                           href="">{{ book_genre.genre.name }}</a>,
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="row pt-1">
+                            <div class="col-sm-3">
+                                <h6>ISBN</h6>
+                            </div>
+                            <div class="col-sm-9 ">
+                                <h6>{{ book.isbn }}</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+            <div class="col-md-12">
+                <div class="row px-2">
+                    <div class="col-1 ">
+                        <img class="small-profile-pic shadow-sm" src="{{ request.user.profile_picture.url }}"
+                             alt="Profile picture">
+                    </div>
+                    <div class="col-md-10 mb-4 ms-2">
+                        <a class="text-success text-decoration-none fw-bold" href="">
+                            {% if request.user.first_name != '' %}
+                                {{ request.user.full_name }}
+                            {% else %}
+                                {{ request.user.username }}
+                            {% endif %}
+                        </a> <span class="fw-bold">start your review of {{ book.title | truncatechars:27 }}</span><br>
+                        <a href="{% url 'books:review' book.id %}" class="btn btn-outline-secondary mt-3">Write a review</a>
+                    </div>
+                </div>
+            </div>
+
+
+                {% if book.bookreview_set.exists %}
+                    <hr>
+
+                    <div class="col-md-12">
+                        {% for review in book.bookreview_set.all|dictsortreversed:'created_at' %}
+                            <div class="row mb-4 shadow-sm p-2 rounded">
+
+                                <div class="col-1">
+                                    <img class="small-profile-pic shadow-sm" src="{{ review.user.profile_picture.url }}"
+                                         alt="Profile picture">
+                                </div>
+                                <div class="col-11 px-4">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <a class="text-decoration-none fw-bold" href="">
+                                                {% if review.user.first_name != '' %}
+                                                    <a href="{% url 'books:user-profile' user.id  %}">{{ review.user.full_name }}</a>
+                                                {% else %}
+                                                    <a href="{% url 'books:user-profile' user.id %}">{{ review.user.username }}</a>
+                                                {% endif %}
+                                            </a> rated it <span class="fw-bold">{{ review.stars_given }}</span>
+                                            stars
+                                            {% if request.user == review.user %}
+                                                <a href="{% url 'books:edit-review' book.id review.id %}">
+                                                    <i class="bi bi-pen"></i></a>
+                                                <a href="{% url 'books:c-delete-review' book.id review.id %}">
+                                                    <i class="bi bi-trash"></i></a>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-4 text-end">
+                                            <a class="text-decoration-none fw-light text-secondary hover"
+                                               href="">{{ review.created_at | date:"M, d, Y" }}</a>
+                                        </div>
+                                    </div>
+                                    <div class="row pt-2">
+                                        <div class="col-12">
+                                            {{ review.comment }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <h6>Genres</h6>
+            <hr>
+            {% for genre in genres %}
+                <a href="#" class="text-secondary text-decoration-none"><p class="border-bottom">{{ genre.name }}</p>
+                </a>
+                {#                <hr>#}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

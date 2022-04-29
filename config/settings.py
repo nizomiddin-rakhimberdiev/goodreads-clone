@@ -26,7 +26,7 @@ environ.Env.read_env(env_file=os.path.join(BASE_DIR, '.env'))
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY")
+SECRET_KEY = 'django-insecure-+0%!zbf=fkin!ts)gcd=5vdmj2dhlq@7(+%$sn*69nt%twz=^n'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG', default=False)
@@ -152,8 +152,8 @@ LOGIN_URL = 'users:login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = 'nizomiddinexample@gmail.com'
+EMAIL_HOST_PASSWORD = 'Example-123'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
